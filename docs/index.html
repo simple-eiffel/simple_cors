@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simple_cors - Cross-Origin Resource Sharing for Eiffel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="simple_* logo" class="logo">
+        </div>
+        <h1>simple_cors</h1>
+        <p class="tagline">Cross-Origin Resource Sharing for Eiffel</p>
+        <div class="badges">
+            <span class="badge badge-rfc">Fetch Standard</span>
+            <span class="badge badge-version">v1.0.0</span>
+            <span class="badge badge-license">MIT</span>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#quick-start">Quick Start</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="api/simple_cors.html">API Reference</a></li>
+            <li><a href="https://github.com/ljr1981/simple_cors">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>
+                <strong>simple_cors</strong> is a native CORS (Cross-Origin Resource Sharing) library for Eiffel.
+                It provides a fluent API for configuring CORS policies and generating the correct HTTP headers
+                for both simple requests and preflight OPTIONS requests.
+            </p>
+            <p>
+                Part of the <strong>simple_*</strong> ecosystem of focused, single-purpose Eiffel libraries.
+            </p>
+        </section>
+
+        <section id="quick-start">
+            <h2>Quick Start</h2>
+
+            <div class="quick-start">
+                <h3>Installation</h3>
+                <p>Add to your ECF file:</p>
+<pre><code>&lt;library name="simple_cors" location="$SIMPLE_CORS/simple_cors.ecf"/&gt;</code></pre>
+                <p>Set environment variable:</p>
+<pre><code>set SIMPLE_CORS=D:\path\to\simple_cors</code></pre>
+            </div>
+
+            <h3>Basic Usage</h3>
+<pre><code><span class="keyword">local</span>
+    cors: <span class="type">SIMPLE_CORS</span>
+    headers: <span class="type">HASH_TABLE</span> [<span class="type">STRING</span>, <span class="type">STRING</span>]
+<span class="keyword">do</span>
+    <span class="comment">-- Create and configure</span>
+    <span class="keyword">create</span> cors.make
+    cors.allow_origin (<span class="string">"https://example.com"</span>)
+    cors.allow_origin (<span class="string">"https://api.example.com"</span>)
+    cors.allow_method (<span class="string">"PUT"</span>)
+    cors.allow_method (<span class="string">"DELETE"</span>)
+    cors.allow_header (<span class="string">"Authorization"</span>)
+
+    <span class="comment">-- Check if request is allowed</span>
+    <span class="keyword">if</span> cors.is_origin_allowed (request_origin) <span class="keyword">then</span>
+        <span class="comment">-- Get headers to add to response</span>
+        headers := cors.headers_for_simple_request (request_origin)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Preflight Handling</h3>
+<pre><code><span class="comment">-- Handle preflight OPTIONS request</span>
+<span class="keyword">if</span> cors.is_preflight_request (request_method, request_origin) <span class="keyword">then</span>
+    <span class="keyword">if</span> cors.is_origin_allowed (request_origin) <span class="keyword">and</span>
+       cors.is_method_allowed (requested_method) <span class="keyword">and</span>
+       cors.are_headers_allowed (requested_headers)
+    <span class="keyword">then</span>
+        headers := cors.headers_for_preflight (
+            request_origin,
+            requested_method,
+            requested_headers
+        )
+        <span class="comment">-- Return 204 No Content with headers</span>
+    <span class="keyword">else</span>
+        <span class="comment">-- Return 403 Forbidden</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Development Mode</h3>
+<pre><code><span class="comment">-- Permissive mode for development</span>
+<span class="keyword">create</span> cors.make_permissive
+<span class="comment">-- Allows all origins, methods, and headers</span></code></pre>
+
+            <h3>With Credentials</h3>
+<pre><code>cors.allow_origin (<span class="string">"https://example.com"</span>)
+cors.allow_credentials
+<span class="comment">-- Note: Cannot use wildcard with credentials</span></code></pre>
+        </section>
+
+        <section id="features">
+            <h2>Features</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Fetch Standard Compliant</h4>
+                    <p>Implements the CORS protocol as defined in the WHATWG Fetch Standard.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Origin Validation</h4>
+                    <p>Exact matching, pattern matching with wildcards, or allow all origins.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Preflight Support</h4>
+                    <p>Automatic handling of OPTIONS preflight requests with all required headers.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Credentials Support</h4>
+                    <p>Proper handling of credentials with automatic wildcard origin prevention.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Cache Control</h4>
+                    <p>Configurable Access-Control-Max-Age for preflight caching.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Security First</h4>
+                    <p>Rejects null origin, includes Vary header, prevents credentials with wildcards.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Fluent API</h4>
+                    <p>Clean, readable configuration with sensible defaults.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Design by Contract</h4>
+                    <p>Full preconditions, postconditions, and class invariants.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="api-summary">
+            <h2>API Summary</h2>
+
+            <h3>Initialization</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>make</code></td>
+                        <td>Default: no origins allowed, simple methods only</td>
+                    </tr>
+                    <tr>
+                        <td><code>make_permissive</code></td>
+                        <td>Development mode: all origins, methods, headers</td>
+                    </tr>
+                    <tr>
+                        <td><code>make_restrictive</code></td>
+                        <td>Production mode: nothing allowed until configured</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Origin Configuration</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>allow_origin (origin)</code></td>
+                        <td>Allow specific origin</td>
+                    </tr>
+                    <tr>
+                        <td><code>allow_origins (list)</code></td>
+                        <td>Allow multiple origins</td>
+                    </tr>
+                    <tr>
+                        <td><code>allow_origin_pattern (pattern)</code></td>
+                        <td>Allow origins matching pattern</td>
+                    </tr>
+                    <tr>
+                        <td><code>allow_all_origins</code></td>
+                        <td>Allow any origin (*)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Method Configuration</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>allow_method (method)</code></td>
+                        <td>Allow specific HTTP method</td>
+                    </tr>
+                    <tr>
+                        <td><code>allow_methods (list)</code></td>
+                        <td>Allow multiple methods</td>
+                    </tr>
+                    <tr>
+                        <td><code>allow_all_methods</code></td>
+                        <td>Allow all common HTTP methods</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Header Configuration</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>allow_header (header)</code></td>
+                        <td>Allow request header</td>
+                    </tr>
+                    <tr>
+                        <td><code>allow_headers (list)</code></td>
+                        <td>Allow multiple headers</td>
+                    </tr>
+                    <tr>
+                        <td><code>allow_all_headers</code></td>
+                        <td>Allow any request header</td>
+                    </tr>
+                    <tr>
+                        <td><code>expose_header (header)</code></td>
+                        <td>Expose response header to JS</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Credentials & Cache</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>allow_credentials</code></td>
+                        <td>Allow credentials (disables wildcard)</td>
+                    </tr>
+                    <tr>
+                        <td><code>disallow_credentials</code></td>
+                        <td>Disallow credentials</td>
+                    </tr>
+                    <tr>
+                        <td><code>set_max_age (seconds)</code></td>
+                        <td>Set preflight cache duration</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Request Processing</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>is_cors_request (origin)</code></td>
+                        <td>Is this a CORS request?</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_preflight_request (method, origin)</code></td>
+                        <td>Is this a preflight request?</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_origin_allowed (origin)</code></td>
+                        <td>Is origin in allowed list?</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_method_allowed (method)</code></td>
+                        <td>Is method allowed?</td>
+                    </tr>
+                    <tr>
+                        <td><code>are_headers_allowed (headers)</code></td>
+                        <td>Are all headers allowed?</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Response Generation</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>headers_for_simple_request (origin)</code></td>
+                        <td>Get headers for simple request</td>
+                    </tr>
+                    <tr>
+                        <td><code>headers_for_preflight (origin, method, headers)</code></td>
+                        <td>Get headers for preflight</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><a href="api/simple_cors.html">View complete API reference &rarr;</a></p>
+        </section>
+
+        <section id="testing">
+            <h2>Testing</h2>
+            <p>
+                The library includes a comprehensive test suite with <strong>33 tests</strong> covering:
+            </p>
+            <ul>
+                <li>Initialization modes (default, permissive, restrictive)</li>
+                <li>Origin configuration (single, multiple, patterns, wildcards)</li>
+                <li>Method and header configuration</li>
+                <li>Credentials handling and wildcard prevention</li>
+                <li>Request detection (CORS vs preflight)</li>
+                <li>Response header generation</li>
+                <li>Security (null origin rejection)</li>
+            </ul>
+<pre><code><span class="comment">-- Run tests</span>
+ec.exe -batch -config simple_cors.ecf -target simple_cors_tests -c_compile
+./EIFGENs/simple_cors_tests/W_code/simple_cors.exe</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            <strong>simple_cors</strong> is part of the
+            <a href="https://github.com/ljr1981">simple_*</a> ecosystem
+        </p>
+        <p class="copyright">
+            Copyright &copy; 2024-2025 Larry Rix. MIT License.
+        </p>
+    </footer>
+</body>
+</html>
