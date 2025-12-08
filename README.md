@@ -4,7 +4,7 @@
 
 # simple_cors
 
-**[Documentation](https://ljr1981.github.io/simple_cors/)**
+**[Documentation](https://simple-eiffel.github.io/simple_cors/)**
 
 CORS (Cross-Origin Resource Sharing) handling library for Eiffel following the Fetch Standard specification.
 
