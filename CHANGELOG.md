@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Testing config updates, AutoTest fixes, .gitignore cleanup
+- Migrate to simple_testing library
+- Fix broken API Reference link in docs
+- Add README with documentation link and design decisions
+- Initial commit: SIMPLE_CORS library with 32 passing tests
+
 ## [1.0.0] - 2025-12-08
 
 ### Added
