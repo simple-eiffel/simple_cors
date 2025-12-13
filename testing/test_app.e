@@ -3,7 +3,7 @@ note
 	author: "Larry Rix"
 
 class
-	CORS_TEST_APP
+	TEST_APP
 
 create
 	make
@@ -12,8 +12,6 @@ feature {NONE} -- Initialization
 
 	make
 			-- Run tests.
-		local
-			tests: SIMPLE_CORS_TEST_SET
 		do
 			create tests
 			print ("simple_cors test runner%N")
@@ -83,6 +81,8 @@ feature {NONE} -- Initialization
 		end
 
 feature {NONE} -- Implementation
+
+	tests: LIB_TESTS
 
 	passed: INTEGER
 	failed: INTEGER
