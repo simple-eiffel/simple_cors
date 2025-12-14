@@ -1,0 +1,9 @@
+{
+  "name": "simple_cors",
+  "version": "0.1.0",
+  "description": "Simple CORS Library - Cross-Origin Resource Sharing for Eiffel",
+  "author": "Larry Rix",
+  "license": "MIT",
+  "category": "web",
+  "keywords": ["cors", "cross-origin", "headers", "security"]
+}
