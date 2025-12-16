@@ -24,12 +24,12 @@ CORS (Cross-Origin Resource Sharing) handling library for Eiffel following the F
 Add to your ECF:
 
 ```xml
-<library name="simple_cors" location="$SIMPLE_CORS\simple_cors.ecf"/>
+<library name="simple_cors" location="$SIMPLE_EIFFEL/simple_cors/simple_cors.ecf"/>
 ```
 
-Set environment variable:
+Set environment variable (one-time setup for all simple_* libraries):
 ```
-SIMPLE_CORS=D:\prod\simple_cors
+SIMPLE_EIFFEL=D:\prod
 ```
 
 ## Usage
